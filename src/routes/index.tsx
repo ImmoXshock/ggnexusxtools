@@ -173,7 +173,7 @@ function RefresherPanel() {
   return (
     <PanelShell
       title="NexusX Refresher"
-      subtitle="Paste your .ROBLOSECURITY cookie to refresh & logout."
+      subtitle="Paste your .ROBLOSECURITY cookie to refresh it."
     >
       <Field label="COOKIE">
         <textarea
@@ -184,7 +184,7 @@ function RefresherPanel() {
         />
       </Field>
       <button onClick={submit} disabled={loading} className={primaryBtn}>
-        {loading ? "Refreshing..." : "Refresh & Logout"}
+        {loading ? "Refreshing..." : "Run Refresh"}
       </button>
       <ResultBlock value={result} />
     </PanelShell>
@@ -195,16 +195,18 @@ function BypasserPanel() {
   const fn = useServerFn(bypassAccount);
   const [cookie, setCookie] = useState("");
   const [password, setPassword] = useState("");
+  const [version, setVersion] = useState<"v1" | "v2">("v1");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
 
   const submit = async () => {
-    if (!cookie.trim() || !password) return;
+    if (!cookie.trim()) return;
+    if (version === "v2" && !password) return;
     setLoading(true);
     setResult("");
     try {
       const r = await fn({
-        data: { cookie: cookie.trim(), password },
+        data: { cookie: cookie.trim(), version, password },
       });
       setResult(JSON.stringify(r.data, null, 2));
     } catch (e: any) {
@@ -217,8 +219,24 @@ function BypasserPanel() {
   return (
     <PanelShell
       title="NexusX Bypass"
-      subtitle="V2 bypass — requires your .ROBLOSECURITY cookie and account password."
+      subtitle="Account bypass via rblxbypasser. V2 also requires your account password."
     >
+      <div className="mb-4 inline-flex rounded-xl border border-nx-gold/30 bg-black/60 p-1">
+        {(["v1", "v2"] as const).map((v) => (
+          <button
+            key={v}
+            onClick={() => setVersion(v)}
+            className={`px-4 py-1.5 text-xs font-bold tracking-[0.2em] rounded-lg transition ${
+              version === v
+                ? "bg-nx-gold text-black shadow-[0_0_15px_rgba(250,204,21,0.5)]"
+                : "text-nx-text/60 hover:text-nx-gold"
+            }`}
+          >
+            {v.toUpperCase()}
+          </button>
+        ))}
+      </div>
+
       <Field label="COOKIE">
         <textarea
           value={cookie}
@@ -227,15 +245,19 @@ function BypasserPanel() {
           className={`${inputClass} h-24 resize-none`}
         />
       </Field>
-      <Field label="ACCOUNT PASSWORD">
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
-          className={inputClass}
-        />
-      </Field>
+
+      {version === "v2" && (
+        <Field label="ACCOUNT PASSWORD">
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            className={inputClass}
+          />
+        </Field>
+      )}
+
       <button onClick={submit} disabled={loading} className={primaryBtn}>
         {loading ? "Running Bypass..." : "Run Bypass"}
       </button>
@@ -243,3 +265,4 @@ function BypasserPanel() {
     </PanelShell>
   );
 }
+
