@@ -93,8 +93,8 @@ Bypasser" },
       { name: "twitter:description", content: "NexusX Tools collection includes:
 Cookie Refresher 
 Bypasser" },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8a51f76f-06d7-4b54-a350-ad36ba908f8f" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8a51f76f-06d7-4b54-a350-ad36ba908f8f" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/0GdWOSq5NWaHDnH8pllMVi8anpi1/social-images/social-1780766381771-865ceebcfd80ac6d512e1d1a61442ef7.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/0GdWOSq5NWaHDnH8pllMVi8anpi1/social-images/social-1780766381771-865ceebcfd80ac6d512e1d1a61442ef7.webp" },
     ],
     links: [
       {
