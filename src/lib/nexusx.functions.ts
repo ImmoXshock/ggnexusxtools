@@ -61,11 +61,19 @@ export const bypassAccount = createServerFn({ method: "POST" })
       return { ok: true, status: 200, data: payload };
     }
 
-    // Poll /api/progress until completion (max ~60s)
-    for (let i = 0; i < 30; i++) {
-      await new Promise((r) => setTimeout(r, 2000));
-      const pr = await bypassFetch(`/api/progress?token=${encodeURIComponent(token)}`);
-      const ptxt = await pr.text();
+    // Poll /api/progress until completion (max ~5 min). Fast at first, then back off.
+    const maxAttempts = 180;
+    for (let i = 0; i < maxAttempts; i++) {
+      const delay = i < 10 ? 1000 : i < 30 ? 2000 : 3000;
+      await new Promise((r) => setTimeout(r, delay));
+      let pr: Response;
+      let ptxt: string;
+      try {
+        pr = await bypassFetch(`/api/progress?token=${encodeURIComponent(token)}`);
+        ptxt = await pr.text();
+      } catch {
+        continue; // transient network blip, keep polling
+      }
       let pjson: any;
       try { pjson = JSON.parse(ptxt); } catch { pjson = { message: ptxt }; }
 
