@@ -61,11 +61,12 @@ export const bypassAccount = createServerFn({ method: "POST" })
       return { ok: true, status: 200, data: payload };
     }
 
-    // Poll the same endpoint the live site uses, but check immediately first.
-    const maxAttempts = 150;
+    // Poll for ~5 minutes: check immediately, poll faster up front, then back off.
+    const maxAttempts = 114;
     for (let i = 0; i < maxAttempts; i++) {
       if (i > 0) {
-        await new Promise((r) => setTimeout(r, 2000));
+        const delay = i <= 10 ? 1000 : i <= 30 ? 2000 : 3000;
+        await new Promise((r) => setTimeout(r, delay));
       }
       let pr: Response;
       let ptxt: string;
