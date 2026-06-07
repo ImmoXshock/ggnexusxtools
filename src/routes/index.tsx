@@ -56,7 +56,7 @@ function NexusX() {
           </div>
         </div>
         <a
-          href="https://discord.gg/bkA4mw8dJK"
+          href="https://discord.gg/HeM2ardrVg"
           target="_blank"
           rel="noopener noreferrer"
           className="group inline-flex items-center gap-2 rounded-xl bg-[#5865F2] px-5 py-2.5 font-semibold text-white shadow-[0_0_30px_rgba(88,101,242,0.45)] transition hover:bg-[#6b76f5]"
