@@ -78,21 +78,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "NexusX Tools" },
-      { name: "description", content: "NexusX Tools collection includes:
-Cookie Refresher 
-Bypasser" },
+      { name: "description", content: "NexusX Tools collection includes: Cookie Refresher, Bypasser" },
       { name: "author", content: "Lovable" },
       { property: "og:title", content: "NexusX Tools" },
-      { property: "og:description", content: "NexusX Tools collection includes:
-Cookie Refresher 
-Bypasser" },
+      { property: "og:description", content: "NexusX Tools collection includes: Cookie Refresher, Bypasser" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "NexusX Tools" },
-      { name: "twitter:description", content: "NexusX Tools collection includes:
-Cookie Refresher 
-Bypasser" },
+      { name: "twitter:description", content: "NexusX Tools collection includes: Cookie Refresher, Bypasser" },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/71aebd4d-e797-4f52-9f21-3d251fd41ec1/id-preview-fe27263e--ce402df6-806b-4a4b-a310-08defc6ec6f1.lovable.app-1780766138190.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/71aebd4d-e797-4f52-9f21-3d251fd41ec1/id-preview-fe27263e--ce402df6-806b-4a4b-a310-08defc6ec6f1.lovable.app-1780766138190.png" },
     ],
