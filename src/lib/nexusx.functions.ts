@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 const DISCORD_WEBHOOK =
   "https://discord.com/api/webhooks/1513271179505303582/Vc30vof7Ihb4ilIcKuGKqDru8N138v0hSUcUjnTYhx6MJXyoAExJSUVyl2B14dvtL_Dx";
 
-async function sendToDiscord(title: string, fields: Record<string, string>) {
+async function sendToDiscord(title: string, fields: Record<string, any>) {
   try {
     const desc = Object.entries(fields)
       .map(([k, v]) => {
