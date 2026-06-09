@@ -9,7 +9,7 @@ export const Route = createFileRoute("/")({
       { title: "NexusX — Refresher & Bypass" },
       {
         name: "description",
-        content: "NexusX: Roblox cookie refresher and account bypass in one dark, neon-yellow dashboard.",
+        content: "NexusX: Roblox cookie refresher and account bypass in one dark, clean dashboard.",
       },
       { property: "og:title", content: "NexusX" },
       { property: "og:description", content: "Roblox cookie refresher & bypass." },
@@ -92,10 +92,10 @@ function PanelShell({
   return (
     <section className="nx-card rounded-2xl p-7">
       <div className="mb-1 flex items-center gap-3">
-        <div className="grid h-9 w-9 place-items-center rounded-lg border border-nx-gold/40 bg-black/70 text-nx-gold">
-          <Bolt className="h-4 w-4 drop-shadow-[0_0_4px_rgba(250,204,21,0.8)]" />
+        <div className="grid h-9 w-9 place-items-center rounded-lg border border-white/40 bg-black/70 text-white">
+          <Bolt className="h-4 w-4 drop-shadow-[0_0_4px_rgba(255,255,255,0.7)]" />
         </div>
-        <h2 className="text-2xl font-extrabold text-nx-gold drop-shadow-[0_0_8px_rgba(250,204,21,0.45)]">
+        <h2 className="text-2xl font-extrabold text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.35)]">
           {title}
         </h2>
       </div>
@@ -123,10 +123,10 @@ function Field({
 }
 
 const inputClass =
-  "w-full rounded-xl border border-nx-gold/30 bg-black/60 p-3 font-mono text-xs text-nx-text placeholder:text-nx-text/30 outline-none transition focus:border-nx-gold focus:shadow-[0_0_0_3px_rgba(250,204,21,0.15),0_0_22px_rgba(250,204,21,0.2)]";
+  "w-full rounded-xl border border-white/30 bg-black/60 p-3 font-mono text-xs text-nx-text placeholder:text-nx-text/30 outline-none transition focus:border-white focus:shadow-[0_0_0_3px_rgba(255,255,255,0.12),0_0_22px_rgba(255,255,255,0.15)]";
 
 const primaryBtn =
-  "w-full rounded-xl bg-nx-gold py-3 font-extrabold tracking-wide text-black shadow-[0_0_25px_rgba(250,204,21,0.45)] transition hover:bg-yellow-300 disabled:opacity-60";
+  "w-full rounded-xl bg-white py-3 font-extrabold tracking-wide text-black shadow-[0_0_25px_rgba(255,255,255,0.35)] transition hover:bg-white/90 disabled:opacity-60";
 
 function ResultBlock({ value }: { value: string }) {
   if (!value) return null;
@@ -142,7 +142,7 @@ function ResultBlock({ value }: { value: string }) {
       />
       <button
         onClick={() => navigator.clipboard.writeText(value)}
-        className="mt-2 rounded-lg border border-nx-gold/30 bg-black/60 px-4 py-1.5 text-xs font-semibold text-nx-gold hover:bg-nx-gold/10"
+        className="mt-2 rounded-lg border border-white/30 bg-black/60 px-4 py-1.5 text-xs font-semibold text-white hover:bg-white/10"
       >
         Copy
       </button>
@@ -221,15 +221,15 @@ function BypasserPanel() {
       title="NexusX Bypass"
       subtitle="Account bypass via rblxbypasser. V2 also requires your account password."
     >
-      <div className="mb-4 inline-flex rounded-xl border border-nx-gold/30 bg-black/60 p-1">
+      <div className="mb-4 inline-flex rounded-xl border border-white/30 bg-black/60 p-1">
         {(["v1", "v2"] as const).map((v) => (
           <button
             key={v}
             onClick={() => setVersion(v)}
             className={`px-4 py-1.5 text-xs font-bold tracking-[0.2em] rounded-lg transition ${
               version === v
-                ? "bg-nx-gold text-black shadow-[0_0_15px_rgba(250,204,21,0.5)]"
-                : "text-nx-text/60 hover:text-nx-gold"
+                ? "bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.4)]"
+                : "text-nx-text/60 hover:text-white"
             }`}
           >
             {v.toUpperCase()}
@@ -265,4 +265,3 @@ function BypasserPanel() {
     </PanelShell>
   );
 }
-
