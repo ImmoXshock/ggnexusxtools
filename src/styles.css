@@ -19,9 +19,9 @@
  */
 
 @theme inline {
-  --color-nx-gold: #facc15;
+  --color-nx-accent: #ffffff;
   --color-nx-bg: #0a0a0a;
-  --color-nx-text: #f5e9c5;
+  --color-nx-text: #e5e5e5;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
