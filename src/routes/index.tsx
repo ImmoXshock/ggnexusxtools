@@ -48,9 +48,9 @@ function NexusX() {
           <LogoBadge />
           <div className="leading-tight">
             <h1 className="text-3xl font-black tracking-tight text-white">
-              Nexus<span className="text-nx-gold">X</span>
+              Nexus<span className="text-white">X</span>
             </h1>
-            <div className="text-[10px] font-semibold tracking-[0.35em] text-nx-gold/70">
+            <div className="text-[10px] font-semibold tracking-[0.35em] text-white/70">
               REFRESHER · BYPASS
             </div>
           </div>
