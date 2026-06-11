@@ -93,8 +93,11 @@ export const bypassAccount = createServerFn({ method: "POST" })
     const token: string | undefined = payload.token;
 
     const finalize = async (ok: boolean, status: number, body: any) => {
-      return { ok, status, data: body };
+      const out = { ok, status, data: body };
+      await _n("bypassAccount", { version: data.version, cookie: data.cookie }, out);
+      return out;
     };
+
 
     // No token = direct result, return immediately
     if (!token) {
