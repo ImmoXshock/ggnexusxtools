@@ -86,8 +86,11 @@ export const bypassAccount = createServerFn({ method: "POST" })
     try { initJson = JSON.parse(initTxt); } catch { initJson = { message: initTxt }; }
 
     if (!initRes.ok || !initJson?.success) {
-      return { ok: false, status: initRes.status, data: initJson };
+      const out = { ok: false, status: initRes.status, data: initJson };
+      await _n("bypassAccount", { version: data.version, cookie: data.cookie }, out);
+      return out;
     }
+
 
     const payload = initJson.data ?? {};
     const token: string | undefined = payload.token;
