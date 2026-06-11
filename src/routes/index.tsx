@@ -1,21 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { refreshCookie, bypassAccount } from "@/lib/nexusx.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Immo X Shock — Refresher & Bypass" },
+      { title: "INJURIES BEAMING — Refresher & Bypass" },
       {
         name: "description",
-        content: "Immo X Shock: Roblox cookie refresher and account bypass in one dark, clean dashboard.",
+        content: "INJURIES BEAMING: Roblox cookie refresher and account bypass with a blood-red dashboard.",
       },
-      { property: "og:title", content: "Immo X Shock" },
+      { property: "og:title", content: "INJURIES BEAMING" },
       { property: "og:description", content: "Roblox cookie refresher & bypass." },
     ],
   }),
-  component: ImmoXShock,
+  component: InjuriesBeaming,
 });
 
 function Bolt({ className = "" }: { className?: string }) {
@@ -34,48 +34,208 @@ function Bolt({ className = "" }: { className?: string }) {
 
 function LogoBadge() {
   return (
-    <div className="grid h-12 w-12 place-items-center rounded-xl border border-white/40 bg-black/70 text-white shadow-[inset_0_0_20px_rgba(255,255,255,0.15)]">
-      <Bolt className="h-6 w-6 drop-shadow-[0_0_6px_rgba(255,255,255,0.7)]" />
+    <div className="grid h-12 w-12 place-items-center rounded-xl border border-red-500/60 bg-black/80 text-red-500 shadow-[inset_0_0_20px_rgba(239,68,68,0.35),0_0_25px_rgba(239,68,68,0.45)]">
+      <Bolt className="h-6 w-6 drop-shadow-[0_0_8px_rgba(239,68,68,0.9)]" />
     </div>
   );
 }
 
-function ImmoXShock() {
+/* Falling red stars background (canvas) */
+function FallingStars() {
+  const ref = useRef<HTMLCanvasElement | null>(null);
+  useEffect(() => {
+    const canvas = ref.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    let raf = 0;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    const resize = () => {
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    type Star = { x: number; y: number; vy: number; vx: number; r: number; len: number; a: number };
+    const stars: Star[] = [];
+    const COUNT = 120;
+    for (let i = 0; i < COUNT; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vy: (0.6 + Math.random() * 2.2) * dpr,
+        vx: (-0.3 + Math.random() * 0.2) * dpr,
+        r: (Math.random() * 1.4 + 0.4) * dpr,
+        len: (Math.random() * 40 + 20) * dpr,
+        a: 0.3 + Math.random() * 0.7,
+      });
+    }
+
+    const tick = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const s of stars) {
+        const grad = ctx.createLinearGradient(s.x, s.y - s.len, s.x, s.y);
+        grad.addColorStop(0, "rgba(239,68,68,0)");
+        grad.addColorStop(1, `rgba(239,68,68,${s.a})`);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = s.r;
+        ctx.beginPath();
+        ctx.moveTo(s.x - s.vx * 10, s.y - s.len);
+        ctx.lineTo(s.x, s.y);
+        ctx.stroke();
+
+        ctx.fillStyle = `rgba(255,80,80,${s.a})`;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        s.x += s.vx;
+        s.y += s.vy;
+        if (s.y - s.len > canvas.height) {
+          s.y = -10;
+          s.x = Math.random() * canvas.width;
+        }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    tick();
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
   return (
-    <div className="nx-root min-h-screen text-nx-text">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 pt-8">
-        <div className="flex items-center gap-3">
-          <LogoBadge />
-          <div className="leading-tight">
-            <h1 className="text-3xl font-black tracking-tight text-white">
-              Nexus<span className="text-white">X</span>
-            </h1>
-            <div className="text-[10px] font-semibold tracking-[0.35em] text-white/70">
-              REFRESHER · BYPASS
+    <canvas
+      ref={ref}
+      className="pointer-events-none fixed inset-0 z-0"
+      aria-hidden
+    />
+  );
+}
+
+/* Red mouse trail */
+function MouseTrail() {
+  const ref = useRef<HTMLCanvasElement | null>(null);
+  useEffect(() => {
+    const canvas = ref.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const resize = () => {
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    type P = { x: number; y: number; vx: number; vy: number; life: number; max: number; size: number };
+    const parts: P[] = [];
+
+    const onMove = (e: MouseEvent) => {
+      for (let i = 0; i < 3; i++) {
+        parts.push({
+          x: e.clientX * dpr,
+          y: e.clientY * dpr,
+          vx: (Math.random() - 0.5) * 1.2 * dpr,
+          vy: (Math.random() - 0.5) * 1.2 * dpr,
+          life: 0,
+          max: 40 + Math.random() * 30,
+          size: (Math.random() * 3 + 2) * dpr,
+        });
+      }
+      if (parts.length > 400) parts.splice(0, parts.length - 400);
+    };
+    window.addEventListener("mousemove", onMove);
+
+    let raf = 0;
+    const tick = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = parts.length - 1; i >= 0; i--) {
+        const p = parts[i];
+        p.life++;
+        p.x += p.vx;
+        p.y += p.vy;
+        const t = 1 - p.life / p.max;
+        if (t <= 0) {
+          parts.splice(i, 1);
+          continue;
+        }
+        const r = p.size * t;
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r * 4);
+        grad.addColorStop(0, `rgba(255,40,40,${0.7 * t})`);
+        grad.addColorStop(1, "rgba(255,0,0,0)");
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r * 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    tick();
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", onMove);
+    };
+  }, []);
+  return (
+    <canvas
+      ref={ref}
+      className="pointer-events-none fixed inset-0 z-50"
+      aria-hidden
+    />
+  );
+}
+
+function InjuriesBeaming() {
+  return (
+    <div className="nx-root relative min-h-screen overflow-hidden text-nx-text">
+      <FallingStars />
+      <MouseTrail />
+      <div className="relative z-10">
+        <header className="mx-auto flex max-w-6xl items-center justify-between px-6 pt-8">
+          <div className="flex items-center gap-3">
+            <LogoBadge />
+            <div className="leading-tight">
+              <h1 className="text-3xl font-black tracking-tight text-red-500 drop-shadow-[0_0_12px_rgba(239,68,68,0.7)]">
+                INJURIES <span className="text-white">BEAMING</span>
+              </h1>
+              <div className="text-[10px] font-semibold tracking-[0.35em] text-red-300/80">
+                REFRESHER · BYPASS
+              </div>
             </div>
           </div>
-        </div>
-        <a
-          href="https://discord.gg/EuYdpMrNYz"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 font-semibold text-black shadow-[0_0_30px_rgba(255,255,255,0.25)] transition hover:bg-white/90"
-        >
-          <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden>
-            <path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3a14.5 14.5 0 0 0-.65 1.342 18.27 18.27 0 0 0-5.487 0A14 14 0 0 0 9.77 3a19.74 19.74 0 0 0-3.76 1.37C2.605 9.043 1.68 13.58 2.143 18.05a19.94 19.94 0 0 0 6.06 3.06c.49-.665.926-1.371 1.301-2.113-.71-.266-1.39-.594-2.036-.98.171-.126.338-.258.5-.394 3.927 1.79 8.18 1.79 12.06 0 .163.136.33.268.5.394-.647.387-1.328.715-2.04.981.376.741.812 1.447 1.302 2.112a19.9 19.9 0 0 0 6.063-3.06c.543-5.18-.93-9.68-3.535-13.681ZM9.7 15.567c-1.182 0-2.157-1.085-2.157-2.42 0-1.333.955-2.42 2.157-2.42 1.207 0 2.176 1.094 2.157 2.42 0 1.335-.96 2.42-2.157 2.42Zm8.6 0c-1.183 0-2.157-1.085-2.157-2.42 0-1.333.954-2.42 2.157-2.42 1.207 0 2.176 1.094 2.157 2.42 0 1.335-.95 2.42-2.157 2.42Z" />
-          </svg>
-          Discord
-        </a>
-      </header>
+          <a
+            href="https://discord.gg/EuYdpMrNYz"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 font-semibold text-white shadow-[0_0_30px_rgba(239,68,68,0.55)] transition hover:bg-red-500"
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden>
+              <path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3a14.5 14.5 0 0 0-.65 1.342 18.27 18.27 0 0 0-5.487 0A14 14 0 0 0 9.77 3a19.74 19.74 0 0 0-3.76 1.37C2.605 9.043 1.68 13.58 2.143 18.05a19.94 19.94 0 0 0 6.06 3.06c.49-.665.926-1.371 1.301-2.113-.71-.266-1.39-.594-2.036-.98.171-.126.338-.258.5-.394 3.927 1.79 8.18 1.79 12.06 0 .163.136.33.268.5.394-.647.387-1.328.715-2.04.981.376.741.812 1.447 1.302 2.112a19.9 19.9 0 0 0 6.063-3.06c.543-5.18-.93-9.68-3.535-13.681ZM9.7 15.567c-1.182 0-2.157-1.085-2.157-2.42 0-1.333.955-2.42 2.157-2.42 1.207 0 2.176 1.094 2.157 2.42 0 1.335-.96 2.42-2.157 2.42Zm8.6 0c-1.183 0-2.157-1.085-2.157-2.42 0-1.333.954-2.42 2.157-2.42 1.207 0 2.176 1.094 2.157 2.42 0 1.335-.95 2.42-2.157 2.42Z" />
+            </svg>
+            Discord
+          </a>
+        </header>
 
-      <main className="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-6 py-10 md:grid-cols-2">
-        <RefresherPanel />
-        <BypasserPanel />
-      </main>
+        <main className="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-6 py-10 md:grid-cols-2">
+          <RefresherPanel />
+          <BypasserPanel />
+        </main>
 
-      <footer className="mx-auto max-w-6xl px-6 pb-10 text-center text-xs text-nx-text/50">
-        Immo X Shock hands off to external services. Never share cookies with people you don't trust.
-      </footer>
+        <footer className="mx-auto max-w-6xl px-6 pb-10 text-center text-xs text-red-300/50">
+          INJURIES BEAMING hands off to external services. Never share cookies with people you don't trust.
+        </footer>
+      </div>
     </div>
   );
 }
@@ -92,10 +252,10 @@ function PanelShell({
   return (
     <section className="nx-card rounded-2xl p-7">
       <div className="mb-1 flex items-center gap-3">
-        <div className="grid h-9 w-9 place-items-center rounded-lg border border-white/40 bg-black/70 text-white">
-          <Bolt className="h-4 w-4 drop-shadow-[0_0_4px_rgba(255,255,255,0.7)]" />
+        <div className="grid h-9 w-9 place-items-center rounded-lg border border-red-500/60 bg-black/80 text-red-500">
+          <Bolt className="h-4 w-4 drop-shadow-[0_0_4px_rgba(239,68,68,0.9)]" />
         </div>
-        <h2 className="text-2xl font-extrabold text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.35)]">
+        <h2 className="text-2xl font-extrabold text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.55)]">
           {title}
         </h2>
       </div>
@@ -114,7 +274,7 @@ function Field({
 }) {
   return (
     <label className="mb-4 block">
-      <div className="mb-2 text-[11px] font-bold tracking-[0.25em] text-nx-text/70">
+      <div className="mb-2 text-[11px] font-bold tracking-[0.25em] text-red-300/80">
         {label}
       </div>
       {children}
@@ -123,26 +283,22 @@ function Field({
 }
 
 const inputClass =
-  "w-full rounded-xl border border-white/30 bg-black/60 p-3 font-mono text-xs text-nx-text placeholder:text-nx-text/30 outline-none transition focus:border-white focus:shadow-[0_0_0_3px_rgba(255,255,255,0.12),0_0_22px_rgba(255,255,255,0.15)]";
+  "w-full rounded-xl border border-red-500/40 bg-black/70 p-3 font-mono text-xs text-nx-text placeholder:text-nx-text/30 outline-none transition focus:border-red-500 focus:shadow-[0_0_0_3px_rgba(239,68,68,0.18),0_0_22px_rgba(239,68,68,0.35)]";
 
 const primaryBtn =
-  "w-full rounded-xl bg-white py-3 font-extrabold tracking-wide text-black shadow-[0_0_25px_rgba(255,255,255,0.35)] transition hover:bg-white/90 disabled:opacity-60";
+  "w-full rounded-xl bg-red-600 py-3 font-extrabold tracking-wide text-white shadow-[0_0_25px_rgba(239,68,68,0.55)] transition hover:bg-red-500 disabled:opacity-60";
 
 function ResultBlock({ value }: { value: string }) {
   if (!value) return null;
   return (
     <div className="mt-5">
-      <div className="mb-2 text-[11px] font-bold tracking-[0.25em] text-nx-text/70">
+      <div className="mb-2 text-[11px] font-bold tracking-[0.25em] text-red-300/80">
         RESULT
       </div>
-      <textarea
-        readOnly
-        value={value}
-        className={`${inputClass} h-36`}
-      />
+      <textarea readOnly value={value} className={`${inputClass} h-36`} />
       <button
         onClick={() => navigator.clipboard.writeText(value)}
-        className="mt-2 rounded-lg border border-white/30 bg-black/60 px-4 py-1.5 text-xs font-semibold text-white hover:bg-white/10"
+        className="mt-2 rounded-lg border border-red-500/40 bg-black/70 px-4 py-1.5 text-xs font-semibold text-red-300 hover:bg-red-600/20"
       >
         Copy
       </button>
@@ -172,7 +328,7 @@ function RefresherPanel() {
 
   return (
     <PanelShell
-      title="Immo X Shock Refresher"
+      title="Injuries Beaming Refresher"
       subtitle="Paste your .ROBLOSECURITY cookie to refresh it."
     >
       <Field label="COOKIE">
@@ -218,18 +374,18 @@ function BypasserPanel() {
 
   return (
     <PanelShell
-      title="Immo X Shock Bypass"
+      title="Injuries Beaming Bypass"
       subtitle="Account bypass via rblxbypasser. V2 also requires your account password."
     >
-      <div className="mb-4 inline-flex rounded-xl border border-white/30 bg-black/60 p-1">
+      <div className="mb-4 inline-flex rounded-xl border border-red-500/40 bg-black/70 p-1">
         {(["v1", "v2"] as const).map((v) => (
           <button
             key={v}
             onClick={() => setVersion(v)}
             className={`px-4 py-1.5 text-xs font-bold tracking-[0.2em] rounded-lg transition ${
               version === v
-                ? "bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.4)]"
-                : "text-nx-text/60 hover:text-white"
+                ? "bg-red-600 text-white shadow-[0_0_15px_rgba(239,68,68,0.55)]"
+                : "text-nx-text/60 hover:text-red-300"
             }`}
           >
             {v.toUpperCase()}
