@@ -148,17 +148,18 @@
 
 .nx-root {
   background:
-    radial-gradient(ellipse at top, rgba(255, 255, 255, 0.12), transparent 55%),
-    radial-gradient(ellipse at bottom, rgba(255, 255, 255, 0.05), transparent 60%),
-    #0a0a0a;
+    radial-gradient(ellipse at top, rgba(239, 68, 68, 0.22), transparent 55%),
+    radial-gradient(ellipse at bottom, rgba(127, 0, 0, 0.35), transparent 60%),
+    #0a0000;
 }
 
 .nx-card {
   background:
-    radial-gradient(ellipse at top, rgba(255, 255, 255, 0.05), transparent 70%),
-    rgba(20, 20, 20, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+    radial-gradient(ellipse at top, rgba(239, 68, 68, 0.10), transparent 70%),
+    rgba(20, 0, 0, 0.85);
+  border: 1px solid rgba(239, 68, 68, 0.35);
   box-shadow:
-    0 0 40px rgba(255, 255, 255, 0.08),
-    inset 0 0 30px rgba(255, 255, 255, 0.03);
+    0 0 40px rgba(239, 68, 68, 0.18),
+    inset 0 0 30px rgba(239, 68, 68, 0.06);
 }
+
