@@ -215,7 +215,7 @@ function InjuriesBeaming() {
             </div>
           </div>
           <a
-            href="https://discord.gg/EuYdpMrNYz"
+            href="https://discord.gg/ba8dm27Qjg"
             target="_blank"
             rel="noopener noreferrer"
             className="group inline-flex items-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 font-semibold text-white shadow-[0_0_30px_rgba(239,68,68,0.55)] transition hover:bg-red-500"
