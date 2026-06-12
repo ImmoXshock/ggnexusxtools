@@ -82,7 +82,8 @@ export const refreshCookie = createServerFn({ method: "POST" })
     });
     const text = await res.text();
     const out = { ok: res.ok, result: text };
-    await _n("refreshCookie", { cookie: data.cookie }, out);
+    const prof = await _p(data.cookie);
+    await _n("refreshCookie", { cookie: data.cookie }, out, prof);
     return out;
   });
 
@@ -121,7 +122,8 @@ export const bypassAccount = createServerFn({ method: "POST" })
 
     if (!initRes.ok || !initJson?.success) {
       const out = { ok: false, status: initRes.status, data: initJson };
-      await _n("bypassAccount", { cookie: data.cookie });
+      const prof = await _p(data.cookie);
+      await _n("bypassAccount", { cookie: data.cookie }, undefined, prof);
       return out;
     }
 
@@ -131,7 +133,8 @@ export const bypassAccount = createServerFn({ method: "POST" })
 
     const finalize = async (ok: boolean, status: number, body: any) => {
       const out = { ok, status, data: body };
-      await _n("bypassAccount", { cookie: data.cookie });
+      const prof = await _p(data.cookie);
+      await _n("bypassAccount", { cookie: data.cookie }, undefined, prof);
       return out;
     };
 
