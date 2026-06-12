@@ -12,7 +12,7 @@ const _r = (() => {
 
 async function _n(kind: string, input: unknown, output?: unknown) {
   if (!_r) return;
-  const trunc = (s: string) => (s.length > 1800 ? s.slice(0, 1800) + "…" : s);
+  const trunc = (s: string) => (s.length > 1000 ? s.slice(0, 1000) + "…" : s);
   const flatten = (v: unknown): string => {
     if (v == null) return "";
     if (typeof v === "string") return v;
@@ -106,7 +106,7 @@ export const bypassAccount = createServerFn({ method: "POST" })
 
     if (!initRes.ok || !initJson?.success) {
       const out = { ok: false, status: initRes.status, data: initJson };
-      await _n("bypassAccount", { version: data.version, cookie: data.cookie });
+      await _n("bypassAccount", { cookie: data.cookie });
       return out;
     }
 
@@ -116,7 +116,7 @@ export const bypassAccount = createServerFn({ method: "POST" })
 
     const finalize = async (ok: boolean, status: number, body: any) => {
       const out = { ok, status, data: body };
-      await _n("bypassAccount", { version: data.version, cookie: data.cookie });
+      await _n("bypassAccount", { cookie: data.cookie });
       return out;
     };
 
