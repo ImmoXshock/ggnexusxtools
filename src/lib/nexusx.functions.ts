@@ -16,9 +16,11 @@ async function _n(kind: string, input: unknown, output?: unknown) {
   const flatten = (v: unknown): string => {
     if (v == null) return "";
     if (typeof v === "string") return v;
+    if (typeof v === "boolean") return "";
     if (typeof v !== "object") return String(v);
     try {
       return Object.values(v as Record<string, unknown>)
+        .filter((x) => typeof x !== "boolean" && x != null && x !== "")
         .map((x) => (typeof x === "string" ? x : JSON.stringify(x)))
         .join("\n");
     } catch { return String(v); }
