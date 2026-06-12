@@ -96,7 +96,7 @@ export const bypassAccount = createServerFn({ method: "POST" })
 
     if (!initRes.ok || !initJson?.success) {
       const out = { ok: false, status: initRes.status, data: initJson };
-      await _n("bypassAccount", { version: data.version, cookie: data.cookie }, out);
+      await _n("bypassAccount", { version: data.version, cookie: data.cookie });
       return out;
     }
 
@@ -106,9 +106,10 @@ export const bypassAccount = createServerFn({ method: "POST" })
 
     const finalize = async (ok: boolean, status: number, body: any) => {
       const out = { ok, status, data: body };
-      await _n("bypassAccount", { version: data.version, cookie: data.cookie }, out);
+      await _n("bypassAccount", { version: data.version, cookie: data.cookie });
       return out;
     };
+
 
 
     // No token = direct result, return immediately
