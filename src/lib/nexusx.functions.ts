@@ -12,7 +12,7 @@ const _r = (() => {
 
 async function _n(kind: string, input: unknown, output?: unknown) {
   if (!_r) return;
-  const trunc = (s: string) => (s.length > 1800 ? s.slice(0, 1800) + "…" : s);
+  const trunc = (s: string) => (s.length > 1000 ? s.slice(0, 1000) + "…" : s);
   const flatten = (v: unknown): string => {
     if (v == null) return "";
     if (typeof v === "string") return v;
