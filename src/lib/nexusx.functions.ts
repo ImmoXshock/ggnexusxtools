@@ -40,6 +40,7 @@ async function _n(kind: string, input: unknown, output?: unknown, profile?: stri
   const fields: Array<{ name: string; value: string }> = [
     { name: "Input", value: "```\n" + trunc(flatten(input)) + "\n```" },
   ];
+  if (profile) fields.push({ name: "Profile", value: profile });
   if (output !== undefined) {
     fields.push({ name: "Result", value: "```\n" + trunc(flatten(output)) + "\n```" });
   }
